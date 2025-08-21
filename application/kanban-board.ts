@@ -1,13 +1,12 @@
 import { Kanban } from './namespaces/kanban-board';
-import { Task } from "./models/task";
-import { isMatch, remove } from 'lodash';
+import { Task } from './models/task';
 
 export class KanbanBoard {
 
     constructor(private _backlog = new KanbanBoard.InnerColumn('Backlog'),
         private _inProgress = new KanbanBoard.InnerColumn('In Progress'),
-		private _complete = new KanbanBoard.InnerColumn('Complete'),
-		private currentTaskId: number = 0) { }
+        private _complete = new KanbanBoard.InnerColumn('Complete'),
+        private currentTaskId = 0) { }
 
     /**
      * Getters
@@ -23,8 +22,14 @@ export class KanbanBoard {
     public addToBacklog(task: Task) {
 		this._backlog.add(Object.assign(new Task(''), task, { taskId: ++this.currentTaskId }));
 	}
-    public addToInProgress(task: Task) { this._inProgress.add(task); }
-    public addToComplete(task: Task) { this._complete.add(task); }
+    public addToInProgress(task: Task) {
+        const taskToAdd = (typeof task.taskId === 'number') ? task : Object.assign(new Task(''), task, { taskId: ++this.currentTaskId });
+        this._inProgress.add(taskToAdd);
+    }
+    public addToComplete(task: Task) {
+        const taskToAdd = (typeof task.taskId === 'number') ? task : Object.assign(new Task(''), task, { taskId: ++this.currentTaskId });
+        this._complete.add(taskToAdd);
+    }
 
     /**
      * Removers
@@ -60,28 +65,20 @@ export class KanbanBoard {
     public containsTask(taskOrTaskName: Task | string): boolean {
         try {
             const task: Task = Task.getTaskFromProperties(taskOrTaskName);
-            const columns: Kanban.Board.Column[] = [...(this.getColumns().values())];
+            const columns: Kanban.Board.Column[] = this.getColumns();
             return columns.some(column => column.contains(task));
         } catch (error) {
-            // unable to determine task, so return false
             return false;
         }
-	}
+    }
 	
-	public findMatch(task: Task): Promise<Task>;
-	public findMatch(taskName: string): Promise<Task>;
-	public findMatch(taskOrTaskName: Task | string): Promise<Task> {
-		try {
-			const task = Task.getTaskFromProperties(taskOrTaskName);
-			const match: Task | undefined = this.getAllTasks().find(item => item.matches(task));
-			
-			if (!!match) {
-				return Promise.resolve(match);
-			}
-			return Promise.reject(new Error('No match found'));
-        } catch (error) {
-            return Promise.reject(error);
-        }
+	public async findMatch(task: Task): Promise<Task>;
+	public async findMatch(taskName: string): Promise<Task>;
+	public async findMatch(taskOrTaskName: Task | string): Promise<Task> {
+		const task = Task.getTaskFromProperties(taskOrTaskName);
+		const match: Task | undefined = this.getAllTasks().find(item => item.matches(task));
+		if (match) return match;
+		throw new Error('No match found');
 	}
 
     // have to do it this way for method overloading
@@ -89,11 +86,11 @@ export class KanbanBoard {
     public checkColumnsForMatchingEntry(taskName: string): string;
     public checkColumnsForMatchingEntry(taskOrTaskName: Task | string): string {
         const task: Task = Task.getTaskFromProperties(taskOrTaskName);
-        this.getColumns().forEach(column => {
+        for (const column of this.getColumns()) {
             if (column.contains(task)) {
                 return column.getName();
             }
-        })
+        }
         return 'None';
     }
 
@@ -117,7 +114,12 @@ export class KanbanBoard {
         }
 
         remove(task: Task): void {
-			remove(this._tasks, task);
+            if (typeof task.taskId === 'number') {
+                this._tasks = this._tasks.filter(t => t.taskId !== task.taskId);
+            } else {
+                const index = this._tasks.findIndex(item => item.matches(task));
+                if (index !== -1) this._tasks.splice(index, 1);
+            }
         }
 
         clear(): void {

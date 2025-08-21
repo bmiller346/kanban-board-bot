@@ -1,13 +1,4 @@
-import { isEqual, isMatch } from "lodash";
-
-interface ITask {
-    readonly name: string;
-    readonly creator?: string;
-    readonly taskId?: number;
-
-    matches: (other: Task) => boolean;
-    toString: () => string;
-}
+import { isEqual } from 'lodash';
 
 export enum Status {
     BACKLOG = 'backlog',
@@ -15,18 +6,25 @@ export enum Status {
     COMPLETE = 'complete'
 }
 
-export class Task implements ITask {
-
+export class Task {
     private _status?: Status;
     private _assignee?: string;
 
-    constructor(readonly name: string, readonly creator?: string, status?: Status, readonly taskId?: number, assignee?: string) {
+    constructor(public readonly name: string, public readonly creator?: string, status?: Status, public readonly taskId?: number, assignee?: string) {
         this._status = status;
         this._assignee = assignee;
     }
 
+    get status(): Status | undefined {
+        return this._status;
+    }
+
     set status(newStatus: Status) {
         this._status = newStatus;
+    }
+
+    get assignee(): string | undefined {
+        return this._assignee;
     }
 
     set assignee(newAssignee: string) {
@@ -40,10 +38,10 @@ export class Task implements ITask {
         return new Task(taskOrTaskName);
     }
 
-    /**
-     * Compare by name for now - in the future, enforce by id
-     */
     matches(other: Task): boolean {
+        if (typeof this.taskId === 'number' && typeof other.taskId === 'number') {
+            return this.taskId === other.taskId;
+        }
         return this.name === other.name;
     }
 

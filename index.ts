@@ -1,21 +1,17 @@
-import botconfig from './config/botconfig.json';
-import Discord, { ClientOptions } from 'discord.js';
+import 'dotenv/config';
+import { Client, ClientOptions, GatewayIntentBits } from 'discord.js';
 import { KanbanBot } from './clients/discord-bot-wrapper';
 import { KanbotConfiguration } from './application/kanbot-configuration';
-import { KanbanBoard } from './application/kanban-board';
-import { Task } from './application/models/task';
 
-const configuration: KanbotConfiguration = new KanbotConfiguration(botconfig.botName, botconfig.token, botconfig.prefix, 'kanbot');
-const clientOptions: ClientOptions = { disableEveryone: true };
-const discordClient: Discord.Client = new Discord.Client(clientOptions);
+const botName = process.env.BOT_NAME || 'Kanbot';
+const token = process.env.DISCORD_TOKEN || '';
+const prefix = process.env.COMMAND_PREFIX || ';
+const commandName = process.env.COMMAND_NAME || 'kanbot';
+
+const configuration: KanbotConfiguration = new KanbotConfiguration(botName, token, prefix, commandName);
+
+const clientOptions: ClientOptions = { intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] };
+const discordClient: Client = new Client(clientOptions);
 const bot: KanbanBot = new KanbanBot(configuration, discordClient);
 bot.setupBot();
-bot.login();
-
-// const kanbotClient: KanbotClient = new KanbotClient(configuration, discordClient);
-
-// const kanbanBoard: KanbanBoard = new KanbanBoard();
-// kanbanBoard.addToBacklog(new Task('"test"'));
-// console.log(kanbanBoard.backlog.getTasks());
-// console.log(kanbanBoard.containsTask('"test"'));
-// console.log(kanbanBoard.containsTask(new Task('"test"')));
+bot.login().catch(err => console.error('Bot login error', err));

@@ -2,34 +2,65 @@
   "name": "kanban-board-bot",
   "version": "1.0.0",
   "description": "A bot for a lightweight kanban board",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon index.ts"
+    "start": "node index.js",
+    "dev": "nodemon -e ts -x 'ts-node' index.ts",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts"
+  },
+  "author": "Sean Lee",
+  "contributors": [
+    "Brian M. <innovate@RWD.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/rest": "^2.0.0",
+    "@discordjs/ws": "^1.0.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "apis": "^0.0.3",
+    "body-parser": "^1.20.2",
+    "discord.js": "^14.12.1",
+    "express-session": "^1.18.0",
+    "google": "^2.1.0",
+    "mysql": "^2.18.1",
+    "passport": "^0.6.0",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-twitter": "^0.1.5",
+    "pg": "^8.11.3",
+    "sjcl": "^1.0.8",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "aws-sdk": "^2.1569.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "lodash": "^4.17.21",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
+    "semver": "^7.6.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "undici": "^6.6.2"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seansylee/kanban-board-bot.git"
+    "url": "https://github.com/bmiller346/kanban-board-bot.git"
   },
-  "author": "Sean Lee",
-  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/seansylee/kanban-board-bot/issues"
+    "url": "https://github.com/bmiller346/kanban-board-bot/issues"
   },
-  "homepage": "https://github.com/seansylee/kanban-board-bot#readme",
-  "dependencies": {
-    "@types/lodash": "^4.14.165",
-    "@types/node": "^14.14.9",
-    "aws-sdk": "^2.797.0",
-    "discord.js": "^11.3.2",
-    "lodash": "^4.17.20",
-    "nodemon": "^1.19.4",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.1.2"
+  "homepage": "https://github.com/bmiller346/kanban-board-bot#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
-    "@typescript-eslint/parser": "^4.8.1",
-    "eslint": "^7.14.0"
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   }
 }

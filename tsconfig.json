@@ -1,10 +1,19 @@
 {
-    "compilerOptions": {
-        "target": "es2015",
-        "module": "commonjs",
-        "strict": true,
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "esModuleInterop": true
-    }
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "commonjs",
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "outDir": "D:/Dev/Git/kanban-board-bot/kanban-board-bot"
+    // Other options as needed
+  },
+  "include": [
+    "./**/*.ts" // Include all TS files in the project
+  ],
+  "exclude": [
+    "node_modules", // Typically excluded to speed up compilation
+    "./dist/**" // Exclude the dist directory if you use it for JS output
+  ]
 }

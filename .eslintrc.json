@@ -1,36 +1,29 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended" // Ensures ESLint configures itself to be compatible with Prettier
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    // Code-quality and potential error rules can remain.
+    // Formatting rules that conflict with Prettier should be removed.
+    "no-console": "error",
+    "no-unused-vars": {
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_",
+      "caughtErrors": "all",
+      "args": "after-used",
+      "ignoreRestSiblings": true
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint"
-    ],
-    "rules": {
-        "indent": [
-            "error",
-            "tab"
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
-    }
+    "no-undef": "error"
+    // Removed: indent, linebreak-style, quotes, semi, max-len, as Prettier will handle these
+  }
 }

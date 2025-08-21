@@ -1,195 +1,62 @@
-import Discord from 'discord.js';
-import { KanbotCommands, KanbotRequest } from '../application/constants/kanbot-commands';
-import { KanbanBoard } from '../application/kanban-board';
-import { KanbotConfiguration } from '../application/kanbot-configuration';
-import { Task } from '../application/models/task';
-import { Kanban } from '../application/namespaces/kanban-board';
-import * as help from '../util/commands.json';
+kanbot-client.ts
+import { Client, GatewayIntentBits, EmbedBuilder, TextChannel, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 
-export class KanbotClient {
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessageReactions
+  ]
+});
 
-    private signal: string;
-    private botName: string;
-    private token: string;
+const webhookChannelId = 'your_channel_id'; // Specify the channel ID for webhook updates
 
-    constructor(kanbotConfiguration: KanbotConfiguration,
-        private discordClient: Discord.Client,
-        private board: KanbanBoard = new KanbanBoard()) {
-        
-        this.signal = kanbotConfiguration.signal;
-        this.botName = kanbotConfiguration.botName;
-        this.token = kanbotConfiguration.token;
+client.once('ready', () => {
+  console.log('Kanbot is online!');
+});
+
+client.on('messageCreate', async (message) => {
+  if (message.author.bot) return;
+
+  if (message.content === '!createTask') {
+    const embed = new EmbedBuilder()
+      .setTitle('New Task')
+      .setDescription('Task description here')
+      .addFields(
+        { name: 'Due Date', value: 'YYYY-MM-DD' },
+        { name: 'Status', value: 'Pending' }
+      )
+      .setColor('#FFFFFF'); // Customize color based on task priority or status
+
+    const button = new ButtonBuilder()
+      .setCustomId('completeTask')
+      .setLabel('Complete Task')
+      .setStyle(ButtonStyle.Success);
+
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
+
+    const channel = message.channel as TextChannel;
+    await channel.send({ embeds: [embed], components: [row] });
+  }
+});
+
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isButton()) return;
+
+  const message = interaction.message;
+  const embed = new EmbedBuilder(message.embeds[0].data);
+
+  if (interaction.customId === 'completeTask') {
+    // Find the Status field and update it
+    const statusField = embed.data.fields?.find(f => f.name === 'Status');
+    if (statusField) {
+      statusField.value = 'Complete';
     }
+    embed.setColor('#00FF00'); // Change color for completed task
 
-    /**
-     * handleLogin
-     */
-    public handleLogin(): void {
-        this.discordClient.login(this.token).then(value => console.log(value));
-    }
+    await interaction.update({ embeds: [embed] });
+  }
+});
 
-    /**
-     * handleReady
-     */
-    public handleReady(): void {
-        this.discordClient.on('ready', () => console.log(`${this.botName} is online!`));
-    }
-
-    public handleMessage(): void {
-        this.discordClient.on('message', (message: Discord.Message) => this.handleRequest(message));
-    }
-
-    /**
-     * handleRequest
-     * @param message DiscordMessage
-     */
-    public handleRequest(message: Discord.Message): void {
-        const channel = message.channel;
-        const caller: string = message.author.username;
-
-        if (message.author.bot) return;
-        if (channel.type === 'dm') return;
-
-        // Parse command, and check.
-        const inputs: string[] = message.content.split(' -');
-        if (inputs[0] !== this.signal) return;
-
-        // display board
-        if (inputs.length === 1) {
-            this.displayBoard(message, caller);
-            return;
-        }
-
-        console.warn(inputs[1]);
-
-        const request: KanbotRequest = KanbotRequest.parseString(inputs[1]);
-        switch (request.command) {
-            case KanbotCommands.ADD:
-                this.addToBacklog(message, request.taskName);
-                break;
-            case KanbotCommands.HELP:
-                message.channel.send(this.helpList(message));
-                break;
-            case KanbotCommands.REMOVE:
-                this.removeItem(message, request.taskName);
-                break;
-            case KanbotCommands.START:
-                this.startItem(message, request.taskName);
-                break;
-            case KanbotCommands.COMPLETE:
-                this.completeItem(message, request.taskName);
-                break;
-            case KanbotCommands.CLEAR:
-                this.board.clearBoard();
-                channel.send({
-                    embed: {
-                        color: 3447003,
-                        description: `Board cleared by: ${message.author.username}`
-                    }
-                });
-                break;
-            default:
-                channel.send({
-                    embed: {
-                        color: 3447003,
-                        description: `Invalid request: ${request.command} ${request.taskName}`
-                    }
-                });
-                break;
-        }
-    }
-
-    private displayBoard(message: Discord.Message, caller: string) {
-        message.channel.send(new Discord.RichEmbed({
-            color: 3447003,
-            description: `${this.botName}!`
-        })
-        .addField('Project Backlog ', `\`\`\`${this.displayColumn(this.board.backlog.getTasks())}\`\`\``)
-        .addField('In Progress ', `\`\`\`${this.displayColumn(this.board.inProgress.getTasks())}\`\`\``)
-        .addField('Completed Tasks', `\`\`\`${this.displayColumn(this.board.complete.getTasks())}\`\`\``)
-        .addField("I've been called by ", caller));
-    }
-
-    private displayColumn(from: Task[]) {
-        return from.map(task => task.toString()).join('\n');
-    }
-
-    private addToBacklog(message: Discord.Message, taskName: string) {
-        const author: string = message.author.username;
-        if (this.board.containsTask(taskName)) {
-            message.channel.send({
-                embed: {
-                    color: 3447003,
-                    description: `Not adding task ${taskName} because it already exists in the kanban board.`
-                }
-            });
-            return;
-        }
-
-        message.channel.send({
-            embed: {
-                color: 3447003,
-                description: `${taskName} has been added to the Backlog by ${author}`
-            }
-        });
-        this.board.addToBacklog(new Task(taskName, author));
-    }
-
-    private helpList(message: Discord.Message) {
-        const Help = new Discord.RichEmbed()
-            .setColor('#0074E7')
-            .setTitle('List of Board Commands')
-            .addField(`${help.view.command}`, `${help.view.desc}`)
-            .addField(`${help.add.command}`, `${help.add.desc}`)
-            .addField(`${help.remove.command}`, `${help.remove.desc}`)
-            .addField(`${help.clearTask.command}`, `${help.clearTask.desc}`)
-            .addField(`${help.startTask.command}`, `${help.startTask.desc}`)
-            .addField(`${help.completeTask.command}`, `${help.completeTask.desc}`);
-        console.log(message);
-        return Help;
-    }
-
-    private async removeItem(message: Discord.Message, item: string): Promise<Discord.Message | Discord.Message[]> {
-        try {
-            const match: Task = await this.board.findMatch(item);
-            this.board.remove(match);
-            return message.channel.send({
-                embed: {
-                    color: 3447003,
-                    description: `Removed ${item} by ${message.author.username}`
-                }
-            });
-        } catch (error) {
-            console.log(error);
-            return message.channel.send({
-                embed: {
-                    color: 3447003,
-                    description: 'No matching item found, nothing removed.'
-                }
-            });
-        }
-    }
-
-    private startItem(message: Discord.Message, item: string) {
-        this.forward(item, this.board.backlog, this.board.inProgress, message);
-    }
-
-    private completeItem(message: Discord.Message, item: string) {
-        this.forward(item, this.board.inProgress, this.board.complete, message);
-    }
-
-    private forward(item: string, from: Kanban.Board.Column, to: Kanban.Board.Column, message: Discord.Message) {
-        const task: Task | undefined = from.findMatch({ name: item } as Task);
-
-        if (task instanceof Task) {
-            from.remove(task);
-            to.add(task);
-            message.channel.send({
-                embed: {
-                    color: 3447003,
-                    description: `${item} moved from "${from.getName()}" to "${to.getName()}" by: ${message.author.username}`
-                }
-            });
-        }
-    }
-}
+client.login('your_token'); // Replace with your bot token

@@ -1,35 +1,3 @@
-// src/models/Task.ts
-export interface ITask {
-  name: string;
-  description?: string;
-  dueDate?: Date;
-  status: TaskStatus;
-  priority: TaskPriority;
-}
-
-export enum TaskStatus {
-  Todo = 'Todo',
-  InProgress = 'In Progress',
-  Done = 'Done',
-}
-
-export enum TaskPriority {
-  Low = 'Low',
-  Medium = 'Medium',
-  High = 'High',
-}
-
-export class Task implements ITask {
-  constructor(
-    public name: string,
-    public status: TaskStatus = TaskStatus.Todo,
-    public priority: TaskPriority = TaskPriority.Low,
-    public description?: string,
-    public dueDate?: Date,
-  ) {}
-}
-
-
 // utils/database.ts
 
 import { Sequelize } from 'sequelize';
@@ -66,4 +34,3 @@ export const Guild = sequelize.define('guild', {
 
 // Sync Guild model with the database
 Guild.sync();
-

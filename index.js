@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const botconfig_json_1 = __importDefault(require("./config/botconfig.json"));
+const discord_js_1 = __importDefault(require("discord.js"));
+const discord_bot_wrapper_1 = require("./clients/discord-bot-wrapper");
+const kanbot_configuration_1 = require("./application/kanbot-configuration");
+const configuration = new kanbot_configuration_1.KanbotConfiguration(botconfig_json_1.default.botName, botconfig_json_1.default.token, botconfig_json_1.default.prefix, 'kanbot');
+const clientOptions = { disableEveryone: true };
+const discordClient = new discord_js_1.default.Client(clientOptions);
+const bot = new discord_bot_wrapper_1.KanbanBot(configuration, discordClient);
+bot.setupBot();
+bot.login();
+// const kanbotClient: KanbotClient = new KanbotClient(configuration, discordClient);
+// const kanbanBoard: KanbanBoard = new KanbanBoard();
+// kanbanBoard.addToBacklog(new Task('"test"'));
+// console.log(kanbanBoard.backlog.getTasks());
+// console.log(kanbanBoard.containsTask('"test"'));
+// console.log(kanbanBoard.containsTask(new Task('"test"')));

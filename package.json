@@ -7,6 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon -e ts -x 'ts-node' index.ts",
     "build": "tsc",
+  "clean": "rimraf dist build lib",
     "lint": "eslint . --ext .ts"
   },
   "author": "Sean Lee",
@@ -45,6 +46,7 @@
     "semver": "^7.6.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
+  "rimraf": "^5.0.0",
     "undici": "^6.6.2"
   },
   "repository": {

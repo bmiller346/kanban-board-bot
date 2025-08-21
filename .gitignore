@@ -1,3 +1,6 @@
 node_modules
 .vscode
 config/botconfig.json
+dist/
+build/
+lib/

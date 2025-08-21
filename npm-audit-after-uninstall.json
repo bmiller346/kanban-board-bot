@@ -1,0 +1,68 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "passport": {
+      "name": "passport",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1093639,
+          "name": "passport",
+          "dependency": "passport",
+          "title": "Passport vulnerable to session regeneration when a users logs in or out",
+          "url": "https://github.com/advisories/GHSA-v923-w3x8-wh69",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-384"
+          ],
+          "cvss": {
+            "score": 4.8,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:L"
+          },
+          "range": "<0.6.0"
+        }
+      ],
+      "effects": [
+        "passport-oauth"
+      ],
+      "range": "<0.6.0",
+      "nodes": [
+        "node_modules/passport-oauth/node_modules/passport"
+      ],
+      "fixAvailable": true
+    },
+    "passport-oauth": {
+      "name": "passport-oauth",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "passport"
+      ],
+      "effects": [],
+      "range": "0.1.3 - 0.1.15",
+      "nodes": [
+        "node_modules/passport-oauth"
+      ],
+      "fixAvailable": true
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 2,
+      "high": 0,
+      "critical": 0,
+      "total": 2
+    },
+    "dependencies": {
+      "prod": 178,
+      "dev": 246,
+      "optional": 70,
+      "peer": 63,
+      "peerOptional": 0,
+      "total": 491
+    }
+  }
+}

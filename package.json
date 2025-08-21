@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon -e ts -x 'ts-node' index.ts",
     "build": "tsc",
-  "clean": "rimraf dist build lib",
+    "clean": "rimraf dist build lib",
     "lint": "eslint . --ext .ts"
   },
   "author": "Sean Lee",
@@ -19,11 +19,9 @@
     "@discordjs/rest": "^2.0.0",
     "@discordjs/ws": "^1.0.0",
     "@microsoft/microsoft-graph-client": "^3.0.7",
-    "apis": "^0.0.3",
     "body-parser": "^1.20.2",
     "discord.js": "^14.12.1",
     "express-session": "^1.18.0",
-    "google": "^2.1.0",
     "mysql": "^2.18.1",
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
@@ -43,10 +41,10 @@
     "lodash": "^4.17.21",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
+    "rimraf": "^5.0.10",
     "semver": "^7.6.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
-  "rimraf": "^5.0.0",
     "undici": "^6.6.2"
   },
   "repository": {

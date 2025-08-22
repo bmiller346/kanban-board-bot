@@ -1,9 +1,6 @@
 // src/services/interactionHandler.ts
-import { Interaction } from 'discord.js';
-import { createTaskCommand } from '../commands/createTaskCommand';
-import { handleSubtaskCommand } from '../commands/handleSubtaskCommand';
-import { handleUserBoardsCommand } from '../commands/handleUserBoardsCommand';
-import { handleGoogleCalendarIntegrationCommand } from '../commands/handleGoogleCalendarIntegrationCommand';
+import { CommandInteraction, Interaction } from 'discord.js';
+import { handleCalendarIntegrationCommand } from '../commands/handlecalendarintegrationcommand';
 
 export const handleInteraction = async (interaction: Interaction) => {
   if (!interaction.isCommand()) return;
@@ -12,17 +9,8 @@ export const handleInteraction = async (interaction: Interaction) => {
     const { commandName } = interaction;
 
     switch (commandName) {
-      case 'create-task':
-        await createTaskCommand.execute(interaction);
-        break;
-      case 'subtask': // Assuming 'subtask' is the command name for subtask management
-        await handleSubtaskCommand(interaction);
-        break;
-      case 'user-boards': // Assuming 'user-boards' is the command name for user board management
-        await handleUserBoardsCommand(interaction);
-        break;
-      case 'google-calendar': // Assuming 'google-calendar' is the command name for Google Calendar integration
-        await handleGoogleCalendarIntegrationCommand(interaction);
+      case 'calendar-integration':
+        await handleCalendarIntegrationCommand(interaction);
         break;
       // ... (cases for other commands) ...
       default:
@@ -33,15 +21,3 @@ export const handleInteraction = async (interaction: Interaction) => {
     await interaction.reply({ content: 'An error occurred while processing the command.', ephemeral: true });
   }
 };
-
-// Importing bot configurations from botconfig.json
-import botConfig from './config/botconfig.json';
-
-// Modify the client's initialization based on botconfig.json
-// Assuming botconfig.json contains fields like prefix, token, etc.
-const client: Client = new Client({
-  intents: botConfig.intents
-});
-
-// Login the client using the token from botconfig.json
-client.login(botConfig.token);

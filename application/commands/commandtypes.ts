@@ -1,6 +1,15 @@
 // src/commands/CommandTypes.ts
 import { SlashCommandBuilder } from '@discordjs/builders';
 
+export enum KanbotCommands {
+  ADD = 'add',
+  CLEAR = 'clear',
+  COMPLETE = 'complete',
+  REMOVE = 'remove',
+  START = 'start',
+  HELP = 'help'
+}
+
 export const createTaskCommandData = new SlashCommandBuilder()
   .setName('create-task')
   .setDescription('Creates a new task.')
@@ -23,12 +32,10 @@ export const createTaskCommandData = new SlashCommandBuilder()
   .addStringOption(option => 
     option.setName('priority')
       .setDescription('Priority of the task')
-      .setRequired(false))
-  .toJSON();
+      .setRequired(false));
 
-// Add other command data as needed
 // Function to get Kanbot Command
-function getKanbotCommand(input: string): KanbotCommands {
+export function getKanbotCommand(input: string): KanbotCommands {
   switch (input.toLowerCase()) {
     case 'add':
       return KanbotCommands.ADD;
@@ -45,42 +52,3 @@ function getKanbotCommand(input: string): KanbotCommands {
       return KanbotCommands.HELP;
   }
 }
-
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-const prefix = '!';
-
-client.on('messageCreate', async (message: Message) => {
-  if (message.author.bot) return;
-
-  if (message.content.startsWith(prefix)) {
-    const input = message.content.slice(prefix.length);
-    const kanbotRequest = KanbotRequest.parseString(input);
-
-    switch (kanbotRequest.command) {
-      case KanbotCommands.ADD:
-        // Add task logic
-        break;
-      case KanbotCommands.CLEAR:
-        // Clear board logic
-        break;
-      case KanbotCommands.COMPLETE:
-        // Complete task logic
-        break;
-      case KanbotCommands.REMOVE:
-        // Remove task logic
-        break;
-      case KanbotCommands.START:
-        // Start task logic
-        break;
-      case KanbotCommands.HELP:
-        // Help command logic
-        break;
-      default:
-        break;
-    }
-  }
-});
-
-// Your implementations for buttons, select menus, webhooks, error handling, permissions, external integrations, reminders, multiple boards, task queries, analytics, tutorials, etc. can be added here.
-
-client.login('YOUR_BOT_TOKEN');

@@ -1,7 +1,7 @@
 //kanbot-configuration.ts
 
 import { BotConfiguration } from './bot-configuration';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 export class KanbotConfiguration extends BotConfiguration {
   private commandPrefix: string;
@@ -17,8 +17,8 @@ export class KanbotConfiguration extends BotConfiguration {
     return `${this.commandPrefix}${this.commandName}`;
   }
 
-  public createEmbed(title: string, description: string): MessageEmbed {
-    const embed = new MessageEmbed()
+  public createEmbed(title: string, description: string): EmbedBuilder {
+    const embed = new EmbedBuilder()
       .setTitle(title)
       .setDescription(description);
 

@@ -16,4 +16,3 @@ export class GoogleCalendarService {
     return false;
   }
 }
-    return [];

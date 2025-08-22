@@ -1,6 +1,6 @@
 // src/services/event-handler.ts
 import { Client } from 'discord.js';
-import { handleInteraction } from './interactionHandler';
+import { handleInteraction } from './interactionhandler';
 import { TaskService } from './TaskService';
 
 export const registerEventHandlers = (client: Client) => {

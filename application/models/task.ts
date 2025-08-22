@@ -20,13 +20,17 @@ export enum TaskPriority {
 }
 
 export class Task implements ITask {
+  public readonly id: string;
+
   constructor(
     public name: string,
     public status: TaskStatus = TaskStatus.Todo,
     public priority: TaskPriority = TaskPriority.Low,
     public description?: string,
     public dueDate?: Date,
-  ) {}
+  ) {
+    this.id = Date.now().toString() + '-' + Math.random().toString(36).substr(2, 9);
+  }
 }
 
 

@@ -3,7 +3,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction, CacheType } from 'discord.js';
 import { TaskService } from '../services/TaskService';
-import { TaskStatus, TaskPriority } from '../models/Task';
+import { TaskStatus, TaskPriority } from '../models/task';
 
 export const createTaskCommand = {
   data: new SlashCommandBuilder()

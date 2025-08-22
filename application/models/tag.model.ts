@@ -1,4 +1,6 @@
 // src/models/tag.model.ts
+import { v4 as uuidv4 } from 'uuid';
+
 export interface ITag {
   id: string;
   name: string;
@@ -16,10 +18,6 @@ export class Tag implements ITag {
     this.description = description;
   }
 }
-
-// src/services/tag.service.ts
-import { Tag, ITag } from '../models/tag.model';
-import { v4 as uuidv4 } from 'uuid';
 
 export class TagService {
   private static tags: Tag[] = [];

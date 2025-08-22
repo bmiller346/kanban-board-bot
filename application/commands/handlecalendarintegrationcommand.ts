@@ -1,8 +1,6 @@
 // src/commands/handleCalendarIntegrationCommand.ts
 import { CommandInteraction } from 'discord.js';
-import { GoogleCalendarService } from '../services/GoogleCalendarService';
-import { OutlookCalendarService } from '../services/OutlookCalendarService';
-import { Office365CalendarService } from '../services/Office365CalendarService';
+import { GoogleCalendarService } from '../n-services/googlecalendarservice';
 
 const handleCalendarIntegrationCommand = async (interaction: CommandInteraction) => {
   try {
@@ -36,18 +34,6 @@ const integrateWithGoogleCalendar = async (interaction: CommandInteraction) => {
   await interaction.reply({ content: 'Google Calendar integration successful!', ephemeral: true });
 };
 
-const integrateWithOutlookCalendar = async (interaction: CommandInteraction) => {
-  const outlookCalendarService = new OutlookCalendarService();
-  // Implement integration logic using OutlookCalendarService
-  // ...
-  await interaction.reply({ content: 'Outlook Calendar integration successful!', ephemeral: true });
-};
-
-const integrateWithOffice365Calendar = async (interaction: CommandInteraction) => {
-  const office365CalendarService = new Office365CalendarService();
-  // Implement integration logic using Office365CalendarService
-  // ...
-  await interaction.reply({ content: 'Office 365 Calendar integration successful!', ephemeral: true });
-};
+// Outlook/Office365 integrations are not implemented yet.
 
 export { handleCalendarIntegrationCommand };

@@ -5,7 +5,7 @@ import path from 'path';
 
 export const registerCommands = (client: Client, commandsPath: string) => {
   client.commands = new Map();
-  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')); // Adjusted for JS files
+  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js') || file.endsWith('.ts'));
 
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);

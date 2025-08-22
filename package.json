@@ -10,6 +10,11 @@
     "clean": "rimraf dist build lib",
     "lint": "eslint . --ext .ts"
   },
+
+  "scripts-minimal": {
+    "build:minimal": "tsc -p minimal/tsconfig.minimal.json",
+    "dev:minimal": "nodemon --watch minimal -e ts --exec \"ts-node ./minimal/bot.ts\""
+  },
   "author": "Sean Lee",
   "contributors": [
     "Brian M. <innovate@RWD.com>"

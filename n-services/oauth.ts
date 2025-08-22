@@ -116,41 +116,8 @@ function requirePaidSubscription(req, res, next) {
 }
 
 client.once('ready', () => {
-  console.log(`${client.user.tag} is online!`);
+  console.log(`${client.user?.tag} is online!`);
   connectToDatabase();
 });
 
 client.login(process.env.DISCORD_TOKEN);
-
-// Utility function to register commands dynamically
-
-//commands.json 
-
-{
-  "view": {
-    "command": "`$kanbot`",
-    "desc": "display the entire board"
-  },
-  "add": {
-    "command": "`$kanbot -add <Task>`",
-    "desc": "default, adding a task to bottom row of \"Backlog\""
-  },
-  "remove": {
-    "command": "`$kanbot -remove <Task>`",
-    "desc": "remove selected tasks"
-  },
-  "clearTask": {
-    "command": "`$kanbot -clear`",
-    "desc": "clear the table of all tasks"
-  },
-  "startTask": {
-    "command": "`$kanbot -start <Task>`",
-    "desc": "shift selected task from the backlog to the in-progress tasks"
-  },
-  "completeTask": {
-    "command": "`$kanbot -complete <Task>`",
-    "desc": "shift selected task from in-progress to completed"
-  }
-}
-
-import { Client } from 'discord.js';
